@@ -107,7 +107,7 @@ func GenUserRouterNoLock(uid string) *RefRouter {
 	mNum := vf.NumMethod()
 	for i := 0; i < mNum; i++ {
 		mName := vft.Method(i).Name
-		wrapSdkLog("index:", i, " MethodName:", mName)
+		//wrapSdkLog("index:", i, " MethodName:", mName)
 		RouteMap1[mName] = vf.Method(i)
 	}
 	wsRouter1.InitSDK(ConfigSvr, "0")

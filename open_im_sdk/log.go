@@ -1,7 +1,6 @@
 package open_im_sdk
 
 import (
-	"bufio"
 	"fmt"
 	nested "github.com/antonfisher/nested-logrus-formatter"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
@@ -37,24 +36,25 @@ func loggerInit(moduleName string) *Logger {
 	//All logs will be printed
 	logger.SetLevel(logrus.Level(6))
 	//Close std console output
-	src, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
-	if err != nil {
-		panic(err.Error())
-	}
-	writer := bufio.NewWriter(src)
-	logger.SetOutput(writer)
+	//src, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	//if err != nil {
+	//	panic(err.Error())
+	//}
+	//writer := bufio.NewWriter(src)
+	//logger.SetOutput(writer)
 	//Log Console Print Style Setting
 	logger.SetFormatter(&nested.Formatter{
 		TimestampFormat: "2006-01-02 15:04:05.000",
 		HideKeys:        false,
 		FieldsOrder:     []string{"PID", "FilePath", "OperationID"},
 	})
+	logger.SetOutput(os.Stdout)
 	//File name and line number display hook
-	logger.AddHook(newFileHook())
+	//logger.AddHook(newFileHook())
 
 	//Log file segmentation hook
-	hook := NewLfsHook(time.Duration(24)*time.Hour, 5, moduleName)
-	logger.AddHook(hook)
+	//hook := NewLfsHook(time.Duration(24)*time.Hour, 5, moduleName)
+	//logger.AddHook(hook)
 	return &Logger{
 		logger,
 		os.Getpid(),

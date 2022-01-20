@@ -55,7 +55,7 @@ func JsonStringToStruct(s string, args interface{}) error {
 	return err
 }
 
-var ServerIP = ""
+var ServerIP = "127.0.0.1"
 
 func init() {
 	//fixme In the configuration file, ip takes precedence, if not, get the valid network card ip of the machine

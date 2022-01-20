@@ -60,6 +60,7 @@ func (ws *WServer) msgParse(conn *UserConn, jsonMsg []byte) {
 
 	wrapSdkLog("recv request from web: ", "reqFuncName ", m.ReqFuncName, "data ", m.Data, "recv jsonMsg: ", string(jsonMsg))
 
+	//是登录请求 就登录
 	if m.ReqFuncName == "Login" {
 		//	rwLock.Lock()
 		ws.DoLogin(m, conn)

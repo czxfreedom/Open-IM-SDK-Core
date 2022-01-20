@@ -57,19 +57,19 @@ func getCurrentTimestampByNano() int64 {
 //wsNotification map[string]chan GeneralWsResp
 
 func (u *UserRelated) AddCh() (string, chan GeneralWsResp) {
-	LogBegin()
+	////LogBegin()
 	u.wsMutex.Lock()
 	defer u.wsMutex.Unlock()
 	msgIncr := u.GenMsgIncr()
-	sdkLog("msgIncr: ", msgIncr)
+	//sdkLog("msgIncr: ", msgIncr)
 	ch := make(chan GeneralWsResp, 1)
 	_, ok := u.wsNotification[msgIncr]
 	if ok {
 		sdkLog("AddCh exist")
 	}
 	u.wsNotification[msgIncr] = ch
-	LogSReturn(msgIncr, ch)
-	LogBegin(msgIncr, ch)
+	//LogSReturn(msgIncr, ch)
+	//LogBegin(msgIncr, ch)
 	return msgIncr, ch
 }
 
@@ -79,12 +79,12 @@ func (u *UserRelated) GetCh(msgIncr string) chan GeneralWsResp {
 	//	defer u.wsMutex.RUnlock()
 	ch, ok := u.wsNotification[msgIncr]
 	if ok {
-		sdkLog("GetCh ok")
-		LogSReturn(ch)
+		//sdkLog("GetCh ok")
+		//LogSReturn(ch)
 		return ch
 	}
-	sdkLog("GetCh nil")
-	LogFReturn(nil)
+	//sdkLog("GetCh nil")
+	//LogFReturn(nil)
 	return nil
 }
 
@@ -97,7 +97,7 @@ func (u *UserRelated) DelCh(msgIncr string) {
 		close(ch)
 		delete(u.wsNotification, msgIncr)
 	}
-	//	LogSReturn()
+	//	//LogSReturn()
 }
 
 func (u *UserRelated) sendPingMsg() error {
@@ -141,7 +141,7 @@ func (u *UserRelated) writeBinaryMsg(msg GeneralWsReq) (error, *websocket.Conn) 
 		if err != nil {
 			LogFReturn(err.Error(), msg.OperationID)
 		} else {
-			LogSReturn(nil)
+			//LogSReturn(nil)
 		}
 		return err, connSended
 	} else {
@@ -151,7 +151,7 @@ func (u *UserRelated) writeBinaryMsg(msg GeneralWsReq) (error, *websocket.Conn) 
 }
 
 func (u *UserRelated) decodeBinaryWs(message []byte) (*GeneralWsResp, error) {
-	LogStart()
+	//LogStart()
 	buff := bytes.NewBuffer(message)
 	dec := gob.NewDecoder(buff)
 	var data GeneralWsResp
@@ -165,8 +165,8 @@ func (u *UserRelated) decodeBinaryWs(message []byte) (*GeneralWsResp, error) {
 }
 
 func (u *UserRelated) WriteMsg(msg GeneralWsReq) (error, *websocket.Conn) {
-	LogStart(msg.OperationID)
-	LogSReturn(msg.OperationID)
+	//LogStart(msg.OperationID)
+	//LogSReturn(msg.OperationID)
 	return u.writeBinaryMsg(msg)
 }
 
@@ -460,6 +460,7 @@ func sdkLog(v ...interface{}) {
 	_, b, c, _ := runtime.Caller(1)
 	i := strings.LastIndex(b, "/")
 	if i != -1 {
+
 		sLog.Println("[", b[i+1:len(b)], ":", c, "]", v)
 	}
 

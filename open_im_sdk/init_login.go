@@ -129,11 +129,15 @@ func (u *UserRelated) login(uid, tk string, cb Base) {
 	sdkLog("ws conn ok ", uid)
 	u.LoginState = LoginSuccess
 	sdkLog("ws conn ok ", uid, u.LoginState)
+	//读取网关websocket的数据
 	go u.run()
 
 	sdkLog("ws, forcedSynchronization heartbeat coroutine timedCloseDB run ...")
+	//第一次登录要强制同步数据
 	go u.forcedSynchronization()
+	//开启心跳协程,间隔一段时间从网关拉取数据
 	go u.heartbeat()
+	//定时关闭数据库连接
 	go u.timedCloseDB()
 	u.forycedSyncReceiveMessageOpt()
 	sdkLog("forycedSyncReceiveMessageOpt ok")
@@ -163,7 +167,7 @@ func (u *UserRelated) timedCloseDB() {
 }
 
 func (u *UserRelated) closeConn() error {
-	LogBegin()
+	////LogBegin()
 	if u.conn != nil {
 		err := u.conn.Close()
 		if err != nil {
@@ -216,7 +220,7 @@ func (u *UserRelated) forycedSyncReceiveMessageOpt() {
 }
 
 func (u *UserRelated) forcedSynchronization() {
-	LogBegin()
+	////LogBegin()
 	u.ForceSyncFriend()
 	u.ForceSyncBlackList()
 	u.ForceSyncFriendApplication()
@@ -228,12 +232,12 @@ func (u *UserRelated) forcedSynchronization() {
 	u.ForceSyncGroupRequest()
 	u.ForceSyncJoinedGroupMember()
 	u.ForceSyncApplyGroupRequest()
-	LogSReturn()
+	//LogSReturn()
 }
 
 func (u *UserRelated) doWsMsg(message []byte) {
-	LogBegin()
-	LogBegin("decodeBinaryWs")
+	////LogBegin()
+	//LogBegin("decodeBinaryWs")
 	wsResp, err := u.decodeBinaryWs(message)
 	if err != nil {
 		LogFReturn("decodeBinaryWs err", err.Error())
@@ -242,12 +246,16 @@ func (u *UserRelated) doWsMsg(message []byte) {
 	LogEnd("decodeBinaryWs ", wsResp.OperationID, wsResp.ReqIdentifier)
 
 	switch wsResp.ReqIdentifier {
+	//拉取最新的序列号
 	case WSGetNewestSeq:
 		u.doWSGetNewestSeq(*wsResp)
+	//通过序列号列表拉取数据
 	case WSPullMsgBySeqList:
 		u.doWSPullMsg(*wsResp)
+		//推送数据
 	case WSPushMsg:
 		u.doWSPushMsg(*wsResp)
+		//
 	case WSSendMsg:
 		u.doWSSendMsg(*wsResp)
 	case WSKickOnlineMsg:
@@ -256,7 +264,7 @@ func (u *UserRelated) doWsMsg(message []byte) {
 		LogFReturn("type failed, ", wsResp.ReqIdentifier, wsResp.OperationID, wsResp.ErrCode, wsResp.ErrMsg)
 		return
 	}
-	LogSReturn()
+	//LogSReturn()
 	return
 }
 
@@ -270,16 +278,16 @@ func (u *UserRelated) notifyResp(wsResp GeneralWsResp) {
 		sdkLog("failed, no chan ", wsResp.MsgIncr, wsResp.OperationID)
 		return
 	}
-	sdkLog("GetCh end, ", ch)
+	//sdkLog("GetCh end, ", ch)
 
-	sdkLog("notify ch start", wsResp.OperationID)
+	//sdkLog("notify ch start", wsResp.OperationID)
 
 	err := notifyCh(ch, wsResp, 1)
 	if err != nil {
 		sdkLog("notifyCh failed, ", err.Error(), ch, wsResp)
 	}
-	sdkLog("notify ch end", wsResp.OperationID)
-	LogSReturn(nil)
+	//sdkLog("notify ch end", wsResp.OperationID)
+	//LogSReturn(nil)
 }
 
 func (u *UserRelated) doWSGetNewestSeq(wsResp GeneralWsResp) {
@@ -301,9 +309,9 @@ func (u *UserRelated) doWSSendMsg(wsResp GeneralWsResp) {
 }
 
 func (u *UserRelated) doWSPushMsg(wsResp GeneralWsResp) {
-	LogBegin()
+	//LogBegin()
 	u.doMsg(wsResp)
-	LogSReturn()
+	//LogSReturn()
 }
 
 func (u *UserRelated) doMsg(wsResp GeneralWsResp) {
@@ -1084,7 +1092,7 @@ func CheckToken(uId, token string) int {
 }
 
 func (u *UserRelated) getUserNewestSeq() (int64, int64, error) {
-	LogBegin()
+	//LogBegin()
 	resp, err := post2Api(newestSeqRouter, paramsNewestSeqReq{ReqIdentifier: 1001, OperationID: operationIDGenerator(), SendID: u.LoginUid, MsgIncr: 1}, u.token)
 	if err != nil {
 		LogFReturn(0, err.Error())

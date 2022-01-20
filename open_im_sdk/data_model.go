@@ -1844,7 +1844,7 @@ func (u *UserRelated) getErrorChatLogSeq(startSeq int32) map[int32]interface{} {
 	} else {
 		sdkLog("Query failed ", err.Error())
 	}
-	LogEnd()
+	//LogEnd()
 	return errSeq
 }
 
@@ -1869,7 +1869,7 @@ func (u *UserRelated) getNormalChatLogSeq(startSeq int32) map[int32]interface{} 
 	} else {
 		sdkLog("Query failed ", err.Error())
 	}
-	LogEnd()
+	//LogEnd()
 	return errSeq
 }
 

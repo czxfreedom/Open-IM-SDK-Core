@@ -66,6 +66,8 @@ func (ws *WServer) Run() {
 		wrapSdkLog("Ws listening err", "", "err", err.Error())
 	}
 }
+
+//从通道里面获取信息 发送给客户端
 func (ws *WServer) getMsgAndSend() {
 	for {
 		select {
@@ -107,7 +109,9 @@ func (ws *WServer) wsHandler(w http.ResponseWriter, r *http.Request) {
 			//userID+" "+platformID->conn
 			SendID := query["sendID"][0] + " " + utils.PlatformIDToName(int32(utils.StringToInt64(query["platformID"][0])))
 			newConn := &UserConn{conn, new(sync.Mutex)}
+			//存储 客户端的连接
 			ws.addUserConn(SendID, newConn)
+			//读取客户端的消息
 			go ws.readMsg(newConn)
 		}
 	}

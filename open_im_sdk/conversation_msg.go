@@ -171,6 +171,7 @@ func (u *UserRelated) doMsgNew(c2v cmd2Value) {
 				//}
 			}
 		} else { //Sent by others
+			//判断在chat_log里面是否已经存在,存在就写入错误的聊天记录里面
 			if !u.judgeMessageIfExists(msg.ClientMsgID) { //Deduplication operation
 				if msg.ContentType != Typing && msg.ContentType != HasReadReceipt {
 					c := ConversationStruct{
